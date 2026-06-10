@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.api import customers
 from app.api import accounts
+from app.api import transactions
 
 app = FastAPI(
     title="Payment Fraud Detection Platform",
@@ -9,7 +10,7 @@ app = FastAPI(
 
 app.include_router(customers.router)
 app.include_router(accounts.router)
-
+app.include_router(transactions.router)
 
 @app.get("/")
 def health_check():
