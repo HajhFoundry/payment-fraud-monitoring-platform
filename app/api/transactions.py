@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.database.connection import SessionLocal
-from app.database.models import Account, Transaction, FraudAlert
+from app.database.models import Account, Transaction, FraudAlert, Customer
+from app.services.fraud_engine import evaluate_transaction
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
@@ -24,7 +25,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 @router.post("/")
 def create_transaction(transaction: TransactionCreate, db: Session = Depends(get_db)):
@@ -52,19 +52,26 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
     db.commit()
     db.refresh(new_transaction)
 
-    fraud_alert = None
+    customer = db.query(Customer).filter(
+        Customer.customer_id == account.customer_id
+    ).first()
 
-    if transaction.amount > 5000:
+    fraud_results = evaluate_transaction(
+        transaction=new_transaction,
+        account=account,
+        customer=customer
+    )
+
+    for fraud_result in fraud_results:
         fraud_alert = FraudAlert(
             transaction_id=new_transaction.transaction_id,
-            rule_name="HIGH_AMOUNT_TRANSACTION",
-            severity="HIGH",
+            rule_name=fraud_result["rule_name"],
+            severity=fraud_result["severity"],
             alert_status="OPEN"
         )
-
         db.add(fraud_alert)
-        db.commit()
-        db.refresh(fraud_alert)
+
+    db.commit()
 
     return {
         "transaction_id": new_transaction.transaction_id,
@@ -75,9 +82,8 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
         "currency": new_transaction.currency,
         "country": new_transaction.country,
         "status": new_transaction.status,
-        "fraud_alert_created": fraud_alert is not None
+        "fraud_alert_count": len(fraud_results)
     }
-
 
 @router.get("/")
 def get_transactions(db: Session = Depends(get_db)):
