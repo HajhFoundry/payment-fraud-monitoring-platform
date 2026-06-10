@@ -86,6 +86,7 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
         "fraud_alert_count": len(fraud_results)
     }
 
+
 @router.get("/")
 def get_transactions(db: Session = Depends(get_db)):
     transactions = db.query(Transaction).all()

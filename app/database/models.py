@@ -50,3 +50,30 @@ class FraudAlert(Base):
     severity = Column(String(30), nullable=False)
     alert_status = Column(String(30), default="OPEN")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class FraudCase(Base):
+    __tablename__ = "fraud_cases"
+
+    case_id = Column(Integer, primary_key=True, index=True)
+    alert_id = Column(Integer, ForeignKey("fraud_alerts.alert_id"), nullable=False)
+    assigned_to = Column(String(100), nullable=False)
+    case_status = Column(String(30), default="OPEN")
+    notes = Column(String(500), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
+class AuditLog(Base):
+    __tablename__ = "audit_logs"
+
+    audit_id = Column(Integer, primary_key=True, index=True)
+
+    event_type = Column(String(100), nullable=False)
+
+    entity_name = Column(String(100), nullable=False)
+
+    entity_id = Column(Integer, nullable=False)
+
+    description = Column(String(500))
+
+    created_at = Column(DateTime, default=datetime.utcnow)
+

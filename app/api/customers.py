@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database.connection import SessionLocal
 from app.database.models import Customer
+from app.services.audit_service import create_audit_log
 
 router = APIRouter(prefix="/customers", tags=["Customers"])
 
@@ -33,7 +34,7 @@ def create_customer(customer: CustomerCreate, db: Session = Depends(get_db)):
             status_code=409,
             detail="Customer with this email already exists"
         )
-        
+
     new_customer = Customer(
         first_name=customer.first_name,
         last_name=customer.last_name,
@@ -41,9 +42,20 @@ def create_customer(customer: CustomerCreate, db: Session = Depends(get_db)):
         country=customer.country,
     )
 
+
     db.add(new_customer)
     db.commit()
     db.refresh(new_customer)
+
+    create_audit_log(
+        db=db,
+        event_type="CREATE",
+        entity_name="CUSTOMER",
+        entity_id=new_customer.customer_id,
+        description=f"Customer {new_customer.email} created"
+    )
+
+    db.commit()
 
     return {
         "customer_id": new_customer.customer_id,

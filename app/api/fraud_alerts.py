@@ -29,4 +29,5 @@ def get_fraud_alerts(db: Session = Depends(get_db)):
             "created_at": str(alert.created_at)
         }
         for alert in alerts
+
     ]

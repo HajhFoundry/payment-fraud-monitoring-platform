@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.database.connection import SessionLocal
 from app.database.models import Account, Customer
 
+
 router = APIRouter(prefix="/accounts", tags=["Accounts"])
 
 
@@ -45,6 +46,10 @@ def create_account(account: AccountCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_account)
 
+   
+
+    db.commit()
+
     return {
         "account_id": new_account.account_id,
         "customer_id": new_account.customer_id,
@@ -52,7 +57,6 @@ def create_account(account: AccountCreate, db: Session = Depends(get_db)):
         "balance": float(new_account.balance),
         "status": new_account.status
     }
-
 
 @router.get("/")
 def get_accounts(db: Session = Depends(get_db)):
