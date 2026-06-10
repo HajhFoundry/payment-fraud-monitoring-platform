@@ -1,7 +1,10 @@
+from datetime import timedelta
+from app.database.models import Transaction
+
 HIGH_RISK_MERCHANT_CATEGORIES = ["CRYPTO", "GAMBLING", "MONEY_TRANSFER"]
 
 
-def evaluate_transaction(transaction, account=None, customer=None):
+def evaluate_transaction(transaction, account=None, customer=None, db=None):
     alerts = []
 
     if float(transaction.amount) > 5000:
@@ -42,5 +45,20 @@ def evaluate_transaction(transaction, account=None, customer=None):
             "rule_name": "HIGH_RISK_HIGH_AMOUNT_MERCHANT",
             "severity": "HIGH"
         })
+
+    if db:
+        window_start = transaction.transaction_time - timedelta(seconds=60)
+
+        recent_count = db.query(Transaction).filter(
+            Transaction.account_id == transaction.account_id,
+            Transaction.transaction_time >= window_start,
+            Transaction.transaction_time <= transaction.transaction_time
+        ).count()
+
+        if recent_count > 3:
+            alerts.append({
+                "rule_name": "HIGH_TRANSACTION_VELOCITY",
+                "severity": "HIGH"
+            })
 
     return alerts

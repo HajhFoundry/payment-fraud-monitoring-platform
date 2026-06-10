@@ -59,7 +59,8 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
     fraud_results = evaluate_transaction(
         transaction=new_transaction,
         account=account,
-        customer=customer
+        customer=customer,
+        db=db
     )
 
     for fraud_result in fraud_results:
