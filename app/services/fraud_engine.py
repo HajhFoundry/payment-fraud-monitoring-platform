@@ -22,4 +22,25 @@ def evaluate_transaction(transaction, account=None, customer=None):
             "severity": "MEDIUM"
         })
 
+    if transaction.status.upper() == "DECLINED":
+        alerts.append({
+            "rule_name": "DECLINED_TRANSACTION",
+            "severity": "LOW"
+        })
+
+    if customer and transaction.country != customer.country and float(transaction.amount) > 1000:
+        alerts.append({
+            "rule_name": "LARGE_FOREIGN_TRANSACTION",
+            "severity": "HIGH"
+        })
+
+    if (
+        transaction.merchant_category.upper() in HIGH_RISK_MERCHANT_CATEGORIES
+        and float(transaction.amount) > 1000
+    ):
+        alerts.append({
+            "rule_name": "HIGH_RISK_HIGH_AMOUNT_MERCHANT",
+            "severity": "HIGH"
+        })
+
     return alerts
