@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -25,6 +25,15 @@ def get_db():
 
 @router.post("/")
 def create_customer(customer: CustomerCreate, db: Session = Depends(get_db)):
+
+    existing_customer = db.query(Customer).filter(Customer.email == customer.email).first()
+
+    if existing_customer:
+        raise HTTPException(
+            status_code=409,
+            detail="Customer with this email already exists"
+        )
+        
     new_customer = Customer(
         first_name=customer.first_name,
         last_name=customer.last_name,
