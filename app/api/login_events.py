@@ -117,6 +117,31 @@ def create_login_event(
                 db.add(travel_alert)
                 db.commit()
 
+    if previous_login:
+        risky_location = previous_login.country != new_login.country
+        new_device = previous_login.device_type != new_login.device_type
+        new_browser = previous_login.browser != new_login.browser
+
+        if (
+            new_login.otp_status == "SUCCESS"
+            and (risky_location or new_device or new_browser)
+        ):
+            existing_otp_success_alert = db.query(FraudAlert).filter(
+                FraudAlert.rule_name == "OTP_SUCCESS_ON_RISKY_LOGIN",
+                FraudAlert.alert_status == "OPEN"
+            ).first()
+
+            if not existing_otp_success_alert:
+                otp_success_alert = FraudAlert(
+                    transaction_id=None,
+                    rule_name="OTP_SUCCESS_ON_RISKY_LOGIN",
+                    severity="HIGH",
+                    alert_status="OPEN"
+                )
+
+                db.add(otp_success_alert)
+                db.commit()
+
     return {
         "login_id": new_login.login_id,
         "customer_id": new_login.customer_id,
