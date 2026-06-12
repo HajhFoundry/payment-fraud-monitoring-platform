@@ -142,6 +142,31 @@ def create_login_event(
                 db.add(otp_success_alert)
                 db.commit()
 
+    failed_logins = db.query(LoginEvent).filter(
+        LoginEvent.customer_id == new_login.customer_id,
+        LoginEvent.login_status == "FAILED",
+        LoginEvent.login_time >= window_start
+    ).count()
+
+    if failed_logins >= 5:
+
+        existing_failed_login_alert = db.query(FraudAlert).filter(
+            FraudAlert.rule_name == "MULTIPLE_FAILED_LOGINS",
+            FraudAlert.alert_status == "OPEN"
+        ).first()
+
+        if not existing_failed_login_alert:
+
+            failed_login_alert = FraudAlert(
+                transaction_id=None,
+                rule_name="MULTIPLE_FAILED_LOGINS",
+                severity="HIGH",
+                alert_status="OPEN"
+            )
+
+            db.add(failed_login_alert)
+            db.commit()
+
     return {
         "login_id": new_login.login_id,
         "customer_id": new_login.customer_id,
