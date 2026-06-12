@@ -77,3 +77,25 @@ class AuditLog(Base):
 
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class LoginEvent(Base):
+    __tablename__ = "login_events"
+
+    login_id = Column(Integer, primary_key=True, index=True)
+    otp_status = Column(String, nullable=False)
+    customer_id = Column(
+        Integer,
+        ForeignKey("customers.customer_id"),
+        nullable=False
+    )
+
+    device_type = Column(String(50))
+    browser = Column(String(50))
+    ip_address = Column(String(100))
+    country = Column(String(100))
+
+    login_status = Column(String(20))
+    otp_status = Column(String)
+    login_time = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
