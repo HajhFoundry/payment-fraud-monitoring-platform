@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database.connection import SessionLocal
 from app.database.models import Account, Customer
+from app.services.audit_service import create_audit_log
 
 
 router = APIRouter(prefix="/accounts", tags=["Accounts"])
@@ -46,7 +47,15 @@ def create_account(account: AccountCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_account)
 
-   
+    create_audit_log(
+        db=db,
+        event_type="CREATE",
+        entity_name="ACCOUNT",
+        entity_id=new_account.account_id,
+        description=f"Account created for customer {new_account.customer_id}"
+    )
+
+
 
     db.commit()
 

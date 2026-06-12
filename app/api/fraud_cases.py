@@ -5,6 +5,7 @@ from datetime import datetime
 
 from app.database.connection import SessionLocal
 from app.database.models import FraudAlert, FraudCase
+from app.services.audit_service import create_audit_log
 
 router = APIRouter(prefix="/fraud-cases", tags=["Fraud Cases"])
 
@@ -50,6 +51,15 @@ def create_fraud_case(case: FraudCaseCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_case)
 
+    create_audit_log(
+        db=db,
+        event_type="CASE_CREATED",
+        entity_name="FRAUD_CASE",
+        entity_id=new_case.case_id,
+        description=f"Case created for alert {new_case.alert_id}"
+    )
+
+    db.commit()
     return {
         "case_id": new_case.case_id,
         "alert_id": new_case.alert_id,
@@ -95,6 +105,13 @@ def update_fraud_case(case_id: int, update: FraudCaseUpdate, db: Session = Depen
     fraud_case.notes = update.notes
     fraud_case.updated_at = datetime.utcnow()
 
+    create_audit_log(
+        db=db,
+        event_type="CASE_UPDATED",
+        entity_name="FRAUD_CASE",
+        entity_id=fraud_case.case_id,
+        description=f"Status changed to {update.case_status}"
+    )
     db.commit()
     db.refresh(fraud_case)
 

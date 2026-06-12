@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.database.connection import SessionLocal
 from app.database.models import Account, Transaction, FraudAlert, Customer
 from app.services.fraud_engine import evaluate_transaction
+from app.services.audit_service import create_audit_log
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
@@ -51,6 +52,15 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
     db.add(new_transaction)
     db.commit()
     db.refresh(new_transaction)
+    create_audit_log(
+        db=db,
+        event_type="CREATE",
+        entity_name="TRANSACTION",
+        entity_id=new_transaction.transaction_id,
+        description=f"Transaction {new_transaction.amount} created"
+    )
+
+    db.commit()
 
     customer = db.query(Customer).filter(
         Customer.customer_id == account.customer_id
@@ -70,7 +80,16 @@ def create_transaction(transaction: TransactionCreate, db: Session = Depends(get
             severity=fraud_result["severity"],
             alert_status="OPEN"
         )
+
         db.add(fraud_alert)
+
+        create_audit_log(
+            db=db,
+            event_type="ALERT_CREATED",
+            entity_name="FRAUD_ALERT",
+            entity_id=new_transaction.transaction_id,
+            description=fraud_result["rule_name"]
+        )
 
     db.commit()
 
