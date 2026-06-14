@@ -45,7 +45,7 @@ class FraudAlert(Base):
     __tablename__ = "fraud_alerts"
 
     alert_id = Column(Integer, primary_key=True, index=True)
-    transaction_id = Column(Integer, ForeignKey("transactions.transaction_id"), nullable=False)
+    transaction_id = Column(Integer, ForeignKey("transactions.transaction_id"), nullable=True)
     rule_name = Column(String(100), nullable=False)
     severity = Column(String(30), nullable=False)
     alert_status = Column(String(30), default="OPEN")
@@ -94,7 +94,7 @@ class LoginEvent(Base):
     country = Column(String(100))
 
     login_status = Column(String(20))
-    otp_status = Column(String)
+    otp_status = Column(String(20))
     login_time = Column(
         DateTime,
         default=datetime.utcnow

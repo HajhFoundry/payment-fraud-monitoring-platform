@@ -12,6 +12,21 @@ jobs:
   pytest:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: payment_fraud_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,6 +41,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Placeholder CI check
+      - name: Create database tables
         run: |
-          echo "CI pipeline configured successfully"
+          python -m app.database.create_tables
+
+      - name: Start FastAPI server
+        run: |
+          nohup uvicorn app.main:app --host 127.0.0.1 --port 8000 > server.log 2>&1 &
+          sleep 5
+
+      - name: Run pytest
+        run: |
+          pytest
