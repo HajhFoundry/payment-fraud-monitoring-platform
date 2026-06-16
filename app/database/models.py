@@ -99,3 +99,14 @@ class LoginEvent(Base):
         DateTime,
         default=datetime.utcnow
     )
+
+class PaymentEvent(Base):
+    __tablename__ = "payment_events"
+
+    payment_event_id = Column(Integer, primary_key=True, index=True)
+    transaction_id = Column(Integer, ForeignKey("transactions.transaction_id"), nullable=True)
+    event_type = Column(String(50), nullable=False)
+    payment_status = Column(String(50), nullable=False)
+    amount = Column(Numeric(10, 2), nullable=False)
+    provider = Column(String(50), default="SIMULATED_GATEWAY")
+    created_at = Column(DateTime, default=datetime.utcnow)
