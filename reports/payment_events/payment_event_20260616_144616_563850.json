@@ -1,0 +1,12 @@
+{
+    "message": "Webhook processed successfully",
+    "payment_event_id": 7,
+    "transaction_id": 53,
+    "event_type": "CHARGEBACK",
+    "payment_status": "CHARGEBACK",
+    "amount": 7000.0,
+    "provider": "SIMULATED_STRIPE",
+    "fraud_alert_id": 129,
+    "fraud_rule": "WEBHOOK_CHARGEBACK",
+    "created_at": "2026-06-16 14:46:16.529974"
+}

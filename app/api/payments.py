@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 
 from app.database.connection import SessionLocal
 from app.database.models import Transaction, PaymentEvent, FraudAlert
+import json
+import os
+from datetime import datetime
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
@@ -25,6 +28,20 @@ def get_db():
     finally:
         db.close()
 
+# PASTE STEP 3 HERE
+def save_payment_event_report(event_data: dict):
+    folder_path = "reports/payment_events"
+    os.makedirs(folder_path, exist_ok=True)
+
+    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S_%f")
+
+    file_name = f"payment_event_{timestamp}.json"
+    file_path = os.path.join(folder_path, file_name)
+
+    with open(file_path, "w") as file:
+        json.dump(event_data, file, indent=4)
+
+    return file_path
 
 @router.post("/authorize")
 def authorize_payment(payment: PaymentRequest, db: Session = Depends(get_db)):
@@ -204,7 +221,7 @@ def process_payment_webhook(webhook: WebhookEvent, db: Session = Depends(get_db)
         fraud_alert_id = fraud_alert.alert_id
         fraud_rule = fraud_alert.rule_name
 
-    return {
+    report_data = {
         "message": "Webhook processed successfully",
         "payment_event_id": event.payment_event_id,
         "transaction_id": event.transaction_id,
@@ -213,8 +230,17 @@ def process_payment_webhook(webhook: WebhookEvent, db: Session = Depends(get_db)
         "amount": float(event.amount),
         "provider": event.provider,
         "fraud_alert_id": fraud_alert_id,
-        "fraud_rule": fraud_rule
+        "fraud_rule": fraud_rule,
+        "created_at": str(event.created_at)
     }
+
+    report_path = save_payment_event_report(report_data)
+
+    return {
+        **report_data,
+        "report_path": report_path
+    }
+
 
 @router.get("/")
 def get_payment_events(db: Session = Depends(get_db)):
