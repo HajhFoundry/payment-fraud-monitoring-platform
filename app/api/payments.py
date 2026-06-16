@@ -7,6 +7,7 @@ from app.database.models import Transaction, PaymentEvent, FraudAlert
 import json
 import os
 from datetime import datetime
+from app.services.s3_service import upload_file_to_s3
 
 router = APIRouter(prefix="/payments", tags=["Payments"])
 
@@ -235,10 +236,13 @@ def process_payment_webhook(webhook: WebhookEvent, db: Session = Depends(get_db)
     }
 
     report_path = save_payment_event_report(report_data)
+    s3_result = upload_file_to_s3(report_path)
+
 
     return {
         **report_data,
-        "report_path": report_path
+        "report_path": report_path,
+        "s3_upload": s3_result
     }
 
 
