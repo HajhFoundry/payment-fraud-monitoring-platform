@@ -12,6 +12,11 @@ class PaymentRequest(BaseModel):
     transaction_id: int
     amount: float
 
+class WebhookEvent(BaseModel):
+    transaction_id: int
+    event_type: str
+    amount: float
+    provider: str = "SIMULATED_GATEWAY"
 
 def get_db():
     db = SessionLocal()
@@ -157,6 +162,60 @@ def chargeback_payment(payment: PaymentRequest, db: Session = Depends(get_db)):
         "fraud_rule": fraud_alert.rule_name
     }
 
+@router.post("/webhook")
+def process_payment_webhook(webhook: WebhookEvent, db: Session = Depends(get_db)):
+
+    transaction = db.query(Transaction).filter(
+        Transaction.transaction_id == webhook.transaction_id
+    ).first()
+
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+
+    normalized_event_type = webhook.event_type.upper()
+
+    event = PaymentEvent(
+        transaction_id=webhook.transaction_id,
+        event_type=normalized_event_type,
+        payment_status=normalized_event_type,
+        amount=webhook.amount,
+        provider=webhook.provider
+    )
+
+    db.add(event)
+    db.commit()
+    db.refresh(event)
+
+    fraud_alert_id = None
+    fraud_rule = None
+
+    if normalized_event_type == "CHARGEBACK":
+        fraud_alert = FraudAlert(
+            transaction_id=webhook.transaction_id,
+            rule_name="WEBHOOK_CHARGEBACK",
+            severity="HIGH",
+            alert_status="OPEN"
+        )
+
+        db.add(fraud_alert)
+        db.commit()
+        db.refresh(fraud_alert)
+
+        fraud_alert_id = fraud_alert.alert_id
+        fraud_rule = fraud_alert.rule_name
+
+    return {
+        "message": "Webhook processed successfully",
+        "payment_event_id": event.payment_event_id,
+        "transaction_id": event.transaction_id,
+        "event_type": event.event_type,
+        "payment_status": event.payment_status,
+        "amount": float(event.amount),
+        "provider": event.provider,
+        "fraud_alert_id": fraud_alert_id,
+        "fraud_rule": fraud_rule
+    }
+
 @router.get("/")
 def get_payment_events(db: Session = Depends(get_db)):
 
@@ -174,3 +233,4 @@ def get_payment_events(db: Session = Depends(get_db)):
         }
         for event in events
     ]
+
