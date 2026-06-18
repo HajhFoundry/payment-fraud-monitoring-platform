@@ -204,3 +204,47 @@ st.dataframe(
     ],
     use_container_width=True
 )
+
+payment_events_df = pd.read_sql("SELECT * FROM payment_events", engine)
+
+st.subheader("Payment Events by Status")
+
+if not payment_events_df.empty:
+    payment_status_df = payment_events_df.groupby("payment_status").size().reset_index(name="count")
+
+    fig_payment_status = px.bar(
+        payment_status_df,
+        x="payment_status",
+        y="count",
+        title="Payment Events by Status"
+    )
+
+    st.plotly_chart(fig_payment_status, use_container_width=True)
+else:
+    st.info("No payment events found.")
+
+st.subheader("Recent Payment Events")
+
+if not payment_events_df.empty:
+    recent_payment_events_df = payment_events_df.sort_values(
+        "created_at",
+        ascending=False
+    ).head(20)
+
+    st.dataframe(
+        recent_payment_events_df[
+            [
+                "payment_event_id",
+                "transaction_id",
+                "event_type",
+                "payment_status",
+                "amount",
+                "provider",
+                "created_at"
+            ]
+        ],
+        use_container_width=True
+    )
+else:
+    st.info("No payment events found.")
+

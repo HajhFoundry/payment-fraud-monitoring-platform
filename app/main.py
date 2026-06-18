@@ -5,6 +5,7 @@ from app.api import transactions
 from app.api import fraud_alerts
 from app.api import fraud_cases
 from app.api import login_events
+from app.api import payments
 
 app = FastAPI(
     title="Payment Fraud Detection Platform",
@@ -17,6 +18,7 @@ app.include_router(transactions.router)
 app.include_router(fraud_alerts.router)
 app.include_router(fraud_cases.router)
 app.include_router(login_events.router)
+app.include_router(payments.router)
 
 @app.get("/")
 def health_check():
