@@ -1,296 +1,400 @@
 # Payment Fraud Monitoring Platform
 
-## Overview
-
-The Payment Fraud Monitoring Platform is an enterprise-style fraud detection and payment event monitoring system built using FastAPI, PostgreSQL, AWS, and Streamlit.
-
-The platform simulates real-world payment processing workflows including:
-
-* Customer Management
-* Account Management
-* Transaction Processing
-* Fraud Detection
-* Chargeback Processing
-* Payment Webhooks
-* Event-Driven Cloud Processing
-* Fraud Analytics Dashboard
-
-The solution demonstrates backend development, cloud integration, fraud monitoring, QA practices, and enterprise documentation.
+Enterprise-grade payment fraud detection, monitoring, investigation, and cloud event processing platform built using FastAPI, PostgreSQL, AWS, and Streamlit.
 
 ---
 
-# Business Problem
+## Project Overview
 
-Financial institutions process thousands of payment events daily.
+The Payment Fraud Monitoring Platform simulates how modern financial institutions monitor transactions, detect fraud, investigate suspicious activity, process payment gateway events, and generate operational dashboards.
 
-Fraud analysts need visibility into:
+The platform demonstrates:
 
-* Suspicious transactions
-* High-value payments
-* Chargebacks
-* Fraud alerts
-* Cloud event processing
-* Operational reporting
-
-This platform provides an end-to-end fraud monitoring workflow using modern cloud architecture.
-
----
-
-# Architecture
-
-FastAPI REST APIs
-
-↓
-
-PostgreSQL Database
-
-↓
-
-Fraud Rules Engine
-
-↓
-
-AWS S3 Event Archive
-
-↓
-
-AWS Lambda Processing
-
-↓
-
-AWS DynamoDB Event Store
-
-↓
-
-CloudWatch Monitoring
-
-↓
-
-Streamlit Dashboard
+- REST API development
+- Payment processing workflows
+- Fraud detection rules
+- Case management
+- Audit logging
+- PostgreSQL database design
+- AWS cloud integration
+- Dashboard reporting
+- Manual and automated testing
+- Business Analyst documentation
+- QA artifacts
 
 ---
 
-# Features
+## Business Problem
 
-## Customer Management
+Financial institutions process thousands of transactions every second.
 
-* Create Customers
-* View Customers
+Fraud analysts need systems that can:
 
-## Account Management
+- Detect suspicious transactions
+- Generate fraud alerts
+- Investigate cases
+- Process chargebacks
+- Monitor payment events
+- Maintain audit trails
+- Produce operational dashboards
 
-* Create Accounts
-* View Accounts
+This project simulates an end-to-end fraud monitoring platform used by banks, payment processors, and fintech companies.
 
-## Transaction Processing
+---
 
-* Create Transactions
-* Transaction History
+## Architecture
 
-## Fraud Detection
+![Architecture](docs/screenshots/architecture-diagram.png)
 
-* High Amount Detection
-* Country Mismatch Detection
-* High Risk Merchant Detection
-* Chargeback Detection
+---
 
-## Fraud Case Management
+## Technology Stack
 
-* Create Fraud Cases
-* Update Fraud Cases
-* Fraud Investigation Workflow
+### Backend
 
-## Payment Processing
+- FastAPI
+- Python
+- SQLAlchemy
+- Pydantic
 
-* Authorization
-* Capture
-* Refund
-* Chargeback
+### Database
 
-## Webhook Processing
+- PostgreSQL
 
-* Payment Event Processing
-* Event Validation
-* Fraud Alert Generation
+### Cloud
 
-## AWS Cloud Integration
+- AWS S3
+- AWS Lambda
+- AWS DynamoDB
+- AWS CloudWatch
+
+### Dashboard
+
+- Streamlit
+- Plotly
+
+### Testing
+
+- Postman
+- Pytest
+- Manual Test Cases
+
+### DevOps
+
+- Git
+- GitHub
+
+---
+
+## Core Features
+
+### Customer Management
+
+- Create customer
+- View customer list
+- Customer validation
+
+### Account Management
+
+- Create account
+- View accounts
+- Balance tracking
+
+### Transaction Processing
+
+- Create transaction
+- Transaction history
+- Fraud evaluation
+
+### Fraud Detection
+
+Rules implemented:
+
+- High Amount Transaction
+- Country Mismatch
+- Velocity Fraud
+- High Risk Merchant
+- Chargeback Detection
+
+### Fraud Alerts
+
+- Alert creation
+- Severity tracking
+- Alert monitoring
+
+### Fraud Case Management
+
+- Open case
+- Assign investigator
+- Update case status
+- Close case
+
+### Login Event Monitoring
+
+- OTP failures
+- Impossible travel detection
+- Suspicious login monitoring
+
+### Payment Gateway Simulator
+
+Simulated payment lifecycle:
+
+- Authorization
+- Capture
+- Refund
+- Chargeback
+
+### Webhook Processing
+
+Processes external payment events and creates fraud records.
+
+### AWS Event Processing
+
+- Upload payment events to S3
+- Trigger Lambda processing
+- Store fraud decisions in DynamoDB
+- Monitor execution through CloudWatch
+
+---
+
+## Application Screenshots
+
+### FastAPI APIs
+
+![Swagger](docs/screenshots/swagger-home.png)
+
+### Create Account API
+
+![Create Account](docs/screenshots/swagger-create-account.png)
+
+### Get Accounts API
+
+![Get Accounts](docs/screenshots/swagger-get-accounts.png)
+
+### Fraud Dashboard
+
+![Dashboard](docs/screenshots/dashboard-overview.png)
+
+### Cloud Fraud Dashboard
+
+![Cloud Dashboard](docs/screenshots/dashboard-cloud-events.png)
+
+### PostgreSQL Data
+
+![Payment Events](docs/screenshots/postgres-payment-events.png)
+
+### Fraud Alerts
+
+![Fraud Alerts](docs/screenshots/postgres-fraud-alerts.png)
+
+### Fraud Cases
+
+![Fraud Cases](docs/screenshots/postgres-fraud-cases.png)
 
 ### AWS S3
 
-Stores payment event reports.
-
-### AWS Lambda
-
-Processes fraud events automatically.
+![S3](docs/screenshots/aws-s3-events.png)
 
 ### AWS DynamoDB
 
-Stores fraud decisions and event metadata.
+![DynamoDB](docs/screenshots/aws-dynamodb-events.png)
 
-### AWS CloudWatch
+### CloudWatch Logs
 
-Captures monitoring and execution logs.
-
-## Dashboard
-
-* Fraud KPIs
-* Fraud Event Reporting
-* Severity Distribution
-* Provider Analysis
-* Cloud Fraud Events
+![CloudWatch](docs/screenshots/aws-cloudwatch-logs.png)
 
 ---
 
-# Technology Stack
+## Database Tables
 
-## Backend
+### customers
 
-* Python
-* FastAPI
-* SQLAlchemy
+Stores customer information.
 
-## Database
+### accounts
 
-* PostgreSQL
+Stores customer accounts.
 
-## Cloud
+### transactions
 
-* AWS S3
-* AWS Lambda
-* AWS DynamoDB
-* AWS CloudWatch
-* AWS IAM
+Stores payment transactions.
 
-## Reporting
+### fraud_alerts
 
-* Streamlit
+Stores generated fraud alerts.
+
+### fraud_cases
+
+Stores fraud investigation cases.
+
+### login_events
+
+Stores authentication events.
+
+### payment_events
+
+Stores payment gateway events.
+
+### audit_logs
+
+Stores compliance and audit history.
+
+---
 
 ## Testing
 
-* Postman
-* Pytest
+### Manual Testing
 
-## Version Control
+Located in:
 
-* Git
-* GitHub
+```
 
----
+docs/manual-test-cases/
 
-# Project Structure
+```
 
-app/
-dashboard/
-docs/
-postman/
-sql/
-tests/
-reports/
+Includes:
 
----
+- Customer API Tests
+- Account API Tests
+- Transaction Tests
+- Fraud Rule Tests
+- Dashboard Tests
+- AWS Integration Tests
+- End-to-End Tests
 
-# AWS Event Flow
+### Postman Testing
 
-Webhook
+Includes:
 
-↓
+- CRUD API validation
+- Negative testing
+- Fraud scenarios
+- Payment workflows
 
-Payment Event
+### Pytest Automation
 
-↓
-
-S3 Upload
-
-↓
-
-Lambda Trigger
-
-↓
-
-Fraud Processing
-
-↓
-
-DynamoDB
-
-↓
-
-Dashboard
+Automated API validation suite.
 
 ---
 
-# Testing
+## Documentation
 
-The project includes:
+### Architecture
 
-* Manual Test Cases
-* Test Plan
-* Requirements Traceability Matrix (RTM)
-* Defect Log
-* Test Summary Report
-* Postman Collection
-* Automated Tests
+```
 
----
+docs/architecture.md
 
-# Interview Skills Demonstrated
+```
 
-## Backend
+### Manual Test Cases
 
-* REST APIs
-* FastAPI
-* SQLAlchemy
+```
 
-## Database
+docs/manual-test-cases/
 
-* PostgreSQL
-* SQL
+```
 
-## Fraud Monitoring
+### QA Package
 
-* Fraud Rules
-* Chargeback Processing
-* Event Processing
+```
 
-## Cloud
+docs/qa/
 
-* AWS S3
-* AWS Lambda
-* AWS DynamoDB
-* CloudWatch
-* IAM
+```
 
-## QA
+### Interview Package
 
-* Manual Testing
-* API Testing
-* Test Planning
-* RTM
-* Defect Management
+```
 
-## Business Analysis
+docs/interview/
 
-* Requirements Traceability
-* Documentation
-* Process Flows
+```
 
 ---
 
-# Future Enhancements
+## End-To-End Flow
 
-* API Gateway
-* GitHub Actions CI/CD
-* Docker Deployment
-* SNS Notifications
-* SQS Queue Processing
-* Advanced Fraud Analytics
+Customer
+→ FastAPI APIs
+→ PostgreSQL
+→ Fraud Rule Engine
+→ Payment Gateway Simulator
+→ Webhook Processing
+→ AWS S3
+→ AWS Lambda
+→ DynamoDB
+→ CloudWatch
+→ Streamlit Dashboard
 
 ---
 
-# Author
+## Skills Demonstrated
 
-Harpreet Singh
+### Software Engineering
 
-Founder & Principal Consultant
+- Python
+- FastAPI
+- REST APIs
+- SQLAlchemy
 
-Future Minds Consulting
+### Database
+
+- PostgreSQL
+- SQL Queries
+- Data Modeling
+
+### Cloud
+
+- AWS S3
+- AWS Lambda
+- DynamoDB
+- CloudWatch
+
+### QA
+
+- Manual Testing
+- Postman
+- Pytest
+- RTM
+
+### Business Analysis
+
+- User Stories
+- RTM
+- Requirements Documentation
+
+### Product Ownership
+
+- Backlog Planning
+- Feature Prioritization
+- Fraud Investigation Workflows
+
+---
+
+## Future Enhancements
+
+- API Gateway
+- Docker Deployment
+- GitHub Actions CI/CD
+- Kaggle Dataset Import
+- Reconciliation Engine
+- Advanced Fraud Scoring
+- Machine Learning Fraud Detection
+
+---
+
+## Author
+
+Independent Portfolio Project
+
+Built to demonstrate:
+
+- Fraud Detection Systems
+- Banking Technology
+- FinTech Platforms
+- Backend Engineering
+- QA Automation
+- Business Analysis
+- Product Ownership
