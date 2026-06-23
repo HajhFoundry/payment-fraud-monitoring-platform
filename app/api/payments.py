@@ -44,6 +44,16 @@ def save_payment_event_report(event_data: dict):
 
     return file_path
 
+def get_latest_payment_status(transaction_id: int, db: Session):
+    latest_event = (
+        db.query(PaymentEvent)
+        .filter(PaymentEvent.transaction_id == transaction_id)
+        .order_by(PaymentEvent.created_at.desc())
+        .first()
+    )
+
+    return latest_event.payment_status if latest_event else None
+
 @router.post("/authorize")
 def authorize_payment(payment: PaymentRequest, db: Session = Depends(get_db)):
 
@@ -85,6 +95,15 @@ def capture_payment(payment: PaymentRequest, db: Session = Depends(get_db)):
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
+    latest_status = get_latest_payment_status(payment.transaction_id, db)
+
+    if latest_status != "AUTHORIZED":
+        raise HTTPException(
+            status_code=400,
+            detail="Payment must be AUTHORIZED before CAPTURE"
+        )
+
+    
     event = PaymentEvent(
         transaction_id=payment.transaction_id,
         event_type="CAPTURE",
@@ -92,6 +111,7 @@ def capture_payment(payment: PaymentRequest, db: Session = Depends(get_db)):
         amount=payment.amount
     )
 
+    
     db.add(event)
     db.commit()
     db.refresh(event)
@@ -147,6 +167,13 @@ def chargeback_payment(payment: PaymentRequest, db: Session = Depends(get_db)):
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
 
+    latest_status = get_latest_payment_status(payment.transaction_id, db)
+
+    if latest_status != "CAPTURED":
+        raise HTTPException(
+            status_code=400,
+            detail="Payment must be CAPTURED before CHARGEBACK"
+        )
     event = PaymentEvent(
         transaction_id=payment.transaction_id,
         event_type="CHARGEBACK",
