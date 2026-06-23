@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 from sqlalchemy import create_engine
+import boto3
 
 DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/payment_fraud_db"
 
@@ -248,3 +249,83 @@ if not payment_events_df.empty:
 else:
     st.info("No payment events found.")
 
+st.subheader("Cloud Fraud Events from DynamoDB")
+
+try:
+    dynamodb = boto3.resource(
+        "dynamodb",
+        region_name="ca-central-1"
+    )
+
+    table = dynamodb.Table("payment_fraud_lambda_events")
+    response = table.scan()
+
+    cloud_events = response.get("Items", [])
+
+    if cloud_events:
+        cloud_events_df = pd.DataFrame(cloud_events)
+        total_cloud_events = len(cloud_events_df)
+        high_severity_events = len(cloud_events_df[cloud_events_df["severity"] == "HIGH"])
+        chargeback_events = len(cloud_events_df[cloud_events_df["event_type"] == "CHARGEBACK"])
+
+        cloud_events_df["amount_numeric"] = pd.to_numeric(
+            cloud_events_df["amount"],
+            errors="coerce"
+        )
+
+        total_cloud_fraud_amount = cloud_events_df["amount_numeric"].sum()
+
+        cloud_col1, cloud_col2, cloud_col3, cloud_col4 = st.columns(4)
+
+        cloud_col1.metric("Cloud Fraud Events", total_cloud_events)
+        cloud_col2.metric("High Severity Events", high_severity_events)
+        cloud_col3.metric("Chargeback Events", chargeback_events)
+        cloud_col4.metric("Cloud Fraud Amount", f"${total_cloud_fraud_amount:,.2f}")
+
+        st.dataframe(
+            cloud_events_df[
+                [
+                    "event_id",
+                    "transaction_id",
+                    "event_type",
+                    "amount",
+                    "provider",
+                    "fraud_detected",
+                    "severity",
+                    "processed_at"
+                ]
+            ],
+            use_container_width=True
+        )
+    else:
+        st.info("No cloud fraud events found in DynamoDB.")
+
+except Exception as error:
+    st.warning(f"Could not load DynamoDB events: {error}")
+
+st.subheader("Cloud Fraud Events by Severity")
+
+severity_cloud_df = cloud_events_df.groupby("severity").size().reset_index(name="count")
+
+fig_cloud_severity = px.pie(
+    severity_cloud_df,
+    names="severity",
+    values="count",
+    title="Cloud Fraud Severity Distribution"
+)
+
+st.plotly_chart(fig_cloud_severity, use_container_width=True)
+
+
+st.subheader("Cloud Fraud Events by Provider")
+
+provider_cloud_df = cloud_events_df.groupby("provider").size().reset_index(name="count")
+
+fig_cloud_provider = px.bar(
+    provider_cloud_df,
+    x="provider",
+    y="count",
+    title="Cloud Fraud Events by Provider"
+)
+
+st.plotly_chart(fig_cloud_provider, use_container_width=True)
