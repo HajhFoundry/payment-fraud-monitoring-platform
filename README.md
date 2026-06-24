@@ -83,8 +83,42 @@ This project simulates an end-to-end fraud monitoring platform used by banks, pa
 
 - Git
 - GitHub
+- GitHub Actions
 
 ---
+
+## Quick Start
+
+Clone repository
+
+git clone <repo-url>
+
+Create virtual environment
+
+python -m venv venv
+
+Activate environment
+
+venv\Scripts\activate
+
+Install dependencies
+
+pip install -r requirements.txt
+
+Run FastAPI
+
+uvicorn app.main:app --reload
+
+Run Dashboard
+
+streamlit run dashboard/app.py
+
+Run Tests
+
+pytest
+
+---
+
 
 ## Core Features
 
@@ -278,6 +312,33 @@ Automated API validation suite.
 
 ---
 
+## Repository Structure
+
+payment-fraud-monitoring-platform/
+
+├── app/
+│   ├── api/
+│   ├── database/
+│   ├── services/
+│   └── main.py
+│
+├── dashboard/
+│   └── app.py
+│
+├── tests/
+│   └── pytest automation
+│
+├── docs/
+│   ├── screenshots/
+│   ├── manual-test-cases/
+│   ├── qa/
+│   └── interview/
+│
+├── requirements.txt
+└── README.md
+
+---
+
 ## Documentation
 
 ### Architecture
@@ -311,7 +372,22 @@ docs/qa/
 docs/interview/
 
 ```
+---
+## CI/CD
 
+GitHub Actions pipeline automatically:
+
+- Installs dependencies
+- Creates database tables
+- Starts FastAPI server
+- Executes Pytest suite
+- Validates API functionality
+
+Current Status:
+
+✅ All automated tests passing
+
+![GitHub Actions](docs/screenshots/github-actions-success.png)
 ---
 
 ## End-To-End Flow
@@ -375,26 +451,34 @@ Customer
 
 ## Future Enhancements
 
-- API Gateway
 - Docker Deployment
-- GitHub Actions CI/CD
-- Kaggle Dataset Import
-- Reconciliation Engine
-- Advanced Fraud Scoring
-- Machine Learning Fraud Detection
+- AWS API Gateway
+- Kaggle Transaction Dataset Import
+- Selenium UI Automation
+- Real-Time Fraud Analytics
+- Machine Learning Fraud Scoring
 
 ---
 
+## Project Statistics
+
+- 8 PostgreSQL Tables
+- 20+ REST API Endpoints
+- AWS S3 Integration
+- AWS Lambda Processing
+- DynamoDB Event Storage
+- CloudWatch Monitoring
+- Streamlit Dashboard
+- Pytest Automation Suite
+- GitHub Actions CI/CD
+
+---
+
+
 ## Author
 
-Independent Portfolio Project
+Harpreet Singh
 
-Built to demonstrate:
+Independent Technology Consultant
 
-- Fraud Detection Systems
-- Banking Technology
-- FinTech Platforms
-- Backend Engineering
-- QA Automation
-- Business Analysis
-- Product Ownership
+Portfolio project demonstrating enterprise fraud detection, payment processing, cloud integrations, QA automation, and business analysis workflows.
