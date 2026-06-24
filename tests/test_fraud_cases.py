@@ -1,10 +1,7 @@
-import requests
 import time
 
-BASE_URL = "http://127.0.0.1:8000"
 
-
-def test_create_and_update_fraud_case():
+def test_create_and_update_fraud_case(client):
 
     unique_email = f"case_pytest_{int(time.time())}@test.com"
 
@@ -16,8 +13,8 @@ def test_create_and_update_fraud_case():
         "country": "Canada"
     }
 
-    customer_response = requests.post(
-        f"{BASE_URL}/customers/",
+    customer_response = client.post(
+        "/customers/",
         json=customer_payload
     )
 
@@ -33,8 +30,8 @@ def test_create_and_update_fraud_case():
         "status": "ACTIVE"
     }
 
-    account_response = requests.post(
-        f"{BASE_URL}/accounts/",
+    account_response = client.post(
+        "/accounts/",
         json=account_payload
     )
 
@@ -53,16 +50,16 @@ def test_create_and_update_fraud_case():
         "status": "APPROVED"
     }
 
-    transaction_response = requests.post(
-        f"{BASE_URL}/transactions/",
+    transaction_response = client.post(
+        "/transactions/",
         json=transaction_payload
     )
 
     assert transaction_response.status_code == 200
 
     # Get latest fraud alert
-    alerts_response = requests.get(
-        f"{BASE_URL}/fraud-alerts/"
+    alerts_response = client.get(
+        "/fraud-alerts/"
     )
 
     assert alerts_response.status_code == 200
@@ -80,8 +77,8 @@ def test_create_and_update_fraud_case():
         "notes": "Pytest fraud case"
     }
 
-    case_response = requests.post(
-        f"{BASE_URL}/fraud-cases/",
+    case_response = client.post(
+        "/fraud-cases/",
         json=case_payload
     )
 
@@ -100,10 +97,11 @@ def test_create_and_update_fraud_case():
         "notes": "Updated by pytest"
     }
 
-    update_response = requests.patch(
-        f"{BASE_URL}/fraud-cases/{case_id}",
+    update_response = client.patch(
+        f"/fraud-cases/{case_id}",
         json=update_payload
     )
+
     assert update_response.status_code == 200
 
     updated_case = update_response.json()

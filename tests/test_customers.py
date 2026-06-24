@@ -1,11 +1,7 @@
-import requests
 import time
 
-BASE_URL = "http://127.0.0.1:8000"
 
-
-def test_create_customer():
-
+def test_create_customer(client):
     unique_email = f"pytest_{int(time.time())}@test.com"
 
     payload = {
@@ -15,8 +11,8 @@ def test_create_customer():
         "country": "Canada"
     }
 
-    response = requests.post(
-        f"{BASE_URL}/customers/",
+    response = client.post(
+        "/customers/",
         json=payload
     )
 

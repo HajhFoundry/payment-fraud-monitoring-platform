@@ -1,10 +1,7 @@
-import requests
 import time
 
-BASE_URL = "http://127.0.0.1:8000"
 
-
-def test_high_amount_transaction_generates_alert():
+def test_high_amount_transaction_generates_alert(client):
 
     unique_email = f"txn_pytest_{int(time.time())}@test.com"
 
@@ -15,8 +12,8 @@ def test_high_amount_transaction_generates_alert():
         "country": "Canada"
     }
 
-    customer_response = requests.post(
-        f"{BASE_URL}/customers/",
+    customer_response = client.post(
+        "/customers/",
         json=customer_payload
     )
 
@@ -31,8 +28,8 @@ def test_high_amount_transaction_generates_alert():
         "status": "ACTIVE"
     }
 
-    account_response = requests.post(
-        f"{BASE_URL}/accounts/",
+    account_response = client.post(
+        "/accounts/",
         json=account_payload
     )
 
@@ -50,8 +47,8 @@ def test_high_amount_transaction_generates_alert():
         "status": "APPROVED"
     }
 
-    transaction_response = requests.post(
-        f"{BASE_URL}/transactions/",
+    transaction_response = client.post(
+        "/transactions/",
         json=transaction_payload
     )
 

@@ -1,11 +1,7 @@
-import requests
 import time
 
-BASE_URL = "http://127.0.0.1:8000"
 
-
-def test_create_account():
-
+def test_create_account(client):
     unique_email = f"account_pytest_{int(time.time())}@test.com"
 
     customer_payload = {
@@ -15,8 +11,8 @@ def test_create_account():
         "country": "Canada"
     }
 
-    customer_response = requests.post(
-        f"{BASE_URL}/customers/",
+    customer_response = client.post(
+        "/customers/",
         json=customer_payload
     )
 
@@ -31,8 +27,8 @@ def test_create_account():
         "status": "ACTIVE"
     }
 
-    account_response = requests.post(
-        f"{BASE_URL}/accounts/",
+    account_response = client.post(
+        "/accounts/",
         json=account_payload
     )
 
