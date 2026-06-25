@@ -79,6 +79,22 @@ This project simulates an end-to-end fraud monitoring platform used by banks, pa
 - Pytest
 - Manual Test Cases
 
+## Docker Deployment
+
+The application supports Docker-based local deployment using Docker Compose.
+
+Docker services include:
+
+- FastAPI API container
+- PostgreSQL database container
+- Persistent PostgreSQL volume
+- Database health check before API startup
+
+### Start Docker Application
+
+```bash
+docker compose up --build
+
 ### DevOps
 
 - Git

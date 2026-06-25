@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:17
+    container_name: payment_fraud_postgres
+    environment:
+      POSTGRES_DB: payment_fraud_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d payment_fraud_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: payment_fraud_api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/payment_fraud_db
+    ports:
+      - "8000:8000"
+    restart: on-failure
+
+volumes:
+  postgres_data:
