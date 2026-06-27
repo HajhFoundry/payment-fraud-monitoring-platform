@@ -135,6 +135,178 @@ pytest
 
 ---
 
+## Running the Project
+
+The project supports multiple execution methods depending on your development workflow.
+
+### Local Development
+
+```bash
+python -m venv venv
+
+venv\Scripts\activate
+
+pip install -r requirements.txt
+
+uvicorn app.main:app --reload
+```
+
+Open:
+
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+### Docker Deployment
+
+Start the application:
+
+```bash
+docker compose up --build
+```
+
+Stop the application:
+
+```bash
+docker compose down
+```
+
+Open:
+
+```
+http://127.0.0.1:8000/docs
+```
+
+Docker deployment includes:
+
+* FastAPI API Container
+* PostgreSQL Database Container
+* Persistent Database Volume
+* PostgreSQL Health Checks
+* Automatic Database Initialization
+
+---
+
+### Run Automated Tests
+
+Execute the automated API test suite:
+
+```bash
+pytest
+```
+
+or
+
+```bash
+scripts/run_tests.bat
+```
+
+---
+
+## Utility Scripts
+
+The repository includes helper scripts to simplify development.
+
+| Script               | Purpose                                |
+| -------------------- | -------------------------------------- |
+| start_local_api.bat  | Starts the FastAPI application locally |
+| start_dashboard.bat  | Starts the Streamlit dashboard         |
+| start_docker_app.bat | Starts the Docker environment          |
+| stop_docker_app.bat  | Stops Docker containers                |
+| run_tests.bat        | Executes the Pytest suite              |
+
+---
+
+## Project Structure
+
+```
+payment-fraud-monitoring-platform
+│
+├── app/
+│   ├── api/
+│   ├── database/
+│   ├── models/
+│   ├── schemas/
+│   ├── services/
+│   └── main.py
+│
+├── dashboard/
+│
+├── tests/
+│
+├── docs/
+│   ├── screenshots/
+│   ├── architecture.md
+│   ├── qa/
+│   └── manual-test-cases/
+│
+├── scripts/
+│
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## API Endpoints
+
+| Module       | Operations                             |
+| ------------ | -------------------------------------- |
+| Customers    | Create, View                           |
+| Accounts     | Create, View                           |
+| Transactions | Create, View                           |
+| Fraud Alerts | View                                   |
+| Fraud Cases  | Create, Update, View                   |
+| Login Events | Create, View                           |
+| Payments     | Authorize, Capture, Refund, Chargeback |
+| Webhooks     | Process Payment Events                 |
+
+---
+
+## Enterprise Concepts Demonstrated
+
+This project demonstrates enterprise software engineering practices commonly used in banking, fintech, and payment processing organizations.
+
+* REST API Design
+* Layered Architecture
+* Database Modeling
+* Rule-Based Fraud Detection
+* Payment Gateway Simulation
+* Fraud Case Management
+* Audit Logging
+* Cloud Event Processing
+* Serverless Computing
+* Dashboard Reporting
+* Automated Testing
+* CI/CD Pipelines
+* Containerization
+* Documentation
+* DevOps Automation
+
+---
+
+## Release History
+
+| Version          | Description                                                            |
+| ---------------- | ---------------------------------------------------------------------- |
+| v1.0             | Initial enterprise fraud monitoring platform                           |
+| v1.1             | Docker deployment, health checks, utility scripts, DevOps improvements |
+| v1.2 *(Planned)* | Selenium UI Automation                                                 |
+| v1.3 *(Planned)* | Kaggle Dataset Import & Batch Processing                               |
+| v2.0 *(Planned)* | Machine Learning Fraud Detection                                       |
+| v3.0 *(Planned)* | AI Fraud Investigation Assistant                                       |
+
+---
+
+## License
+
+This repository is intended as a portfolio and educational project. If you're interested in custom implementations, API development, QA automation, fraud monitoring solutions, or enterprise integrations, please contact Future Minds Technology.
+
+---
 
 ## Core Features
 
@@ -489,7 +661,6 @@ Customer
 - GitHub Actions CI/CD
 
 ---
-
 
 ## Author
 
