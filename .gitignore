@@ -221,3 +221,7 @@ __marimo__/
 
 reports/payment_events/*.json
 
+data/kaggle/*.csv
+data/imports/*.csv
+data/processed/*.csv
+data/rejected/*.csv

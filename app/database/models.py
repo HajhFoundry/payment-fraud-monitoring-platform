@@ -110,3 +110,19 @@ class PaymentEvent(Base):
     amount = Column(Numeric(10, 2), nullable=False)
     provider = Column(String(50), default="SIMULATED_GATEWAY")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+class ImportJob(Base):
+    __tablename__ = "import_jobs"
+
+    job_id = Column(Integer, primary_key=True, index=True)
+    file_name = Column(String, nullable=False)
+    source = Column(String, default="KAGGLE_PAYSIM")
+    status = Column(String, default="STARTED")
+
+    total_rows = Column(Integer, default=0)
+    imported_rows = Column(Integer, default=0)
+    rejected_rows = Column(Integer, default=0)
+    fraud_rows = Column(Integer, default=0)
+
+    started_at = Column(DateTime, default=datetime.utcnow)
+    completed_at = Column(DateTime, nullable=True)
