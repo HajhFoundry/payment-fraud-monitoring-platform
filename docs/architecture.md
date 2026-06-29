@@ -6,6 +6,22 @@ This project simulates how modern financial institutions detect suspicious trans
 
 ---
 
+## Highlights
+
+- Enterprise-grade FastAPI REST APIs
+- Rule-based fraud detection engine
+- Risk Analysis Framework
+- Fraud investigation workflow
+- Kaggle PaySim batch import pipeline
+- Machine Learning baseline (Random Forest)
+- Streamlit analytics dashboard
+- AWS S3, Lambda, DynamoDB, and CloudWatch integration
+- Docker deployment
+- GitHub Actions CI/CD
+- Pytest and Selenium automation
+
+---
+
 # Business Problem
 
 Financial institutions process millions of payment transactions every day.
@@ -322,9 +338,15 @@ Imported datasets can later be used for:
 * Machine learning experiments
 * Historical reporting
 
+### Kaggle Batch Import Execution
+
+![Kaggle Import](screenshots/kaggle-import.png)
+
+*Figure: The PaySim Kaggle dataset is imported through the batch processing pipeline. The importer validates the CSV, processes transactions, records import statistics, and tracks completed import jobs for auditing and historical analytics.*
+
 ---
 
-# Machine Learning Baseline
+# Fraud Analytics & Machine Learning
 
 An experimental Random Forest model has been added to compare machine learning against the existing rule-based fraud engine.
 
@@ -341,6 +363,12 @@ Current evaluation compares:
 * Precision
 * Recall
 * F1 Score
+
+### Rule Engine vs Machine Learning Evaluation
+
+![Machine Learning Evaluation](screenshots/ml-baseline.png)
+
+*Figure: Performance comparison between the rule-based fraud detection engine and the Random Forest baseline model using the PaySim synthetic fraud dataset. This demonstrates how machine learning can complement a traditional rules engine within an enterprise fraud detection platform.*
 
 > **Note**
 >
@@ -394,18 +422,89 @@ GitHub Actions automatically:
 
 # Application Screenshots
 
-Add screenshots for the following sections.
+## Enterprise Architecture
 
-* Enterprise Architecture
-* Swagger API Documentation
-* Streamlit Dashboard
-* Fraud Alerts
-* Fraud Cases
-* Docker Deployment
-* GitHub Actions
-* Selenium Automation
-* Kaggle Batch Import
-* AWS Dashboard (optional)
+![Architecture](screenshots/architecture.png)
+
+*Figure: End-to-end payment fraud intelligence architecture.*
+
+---
+
+## REST APIs
+
+![Swagger](screenshots/swagger-home.png)
+
+*Figure: FastAPI Swagger documentation exposing customer, account, transaction, fraud, payment, and import APIs.*
+
+---
+
+## Fraud Dashboard
+
+![Dashboard](screenshots/dashboard-overview.png)
+
+*Figure: Operational dashboard displaying fraud KPIs, alerts, investigations, and analytics.*
+
+---
+
+## Cloud Event Processing
+
+![Cloud Dashboard](screenshots/dashboard-cloud-events.png)
+
+*Figure: Streamlit dashboard displaying fraud events processed through AWS Lambda and stored in DynamoDB.*
+
+---
+
+## AWS Services
+
+### Amazon S3
+
+![S3](screenshots/s3-events.png)
+
+*Figure: Payment event JSON reports stored in Amazon S3.*
+
+### AWS Lambda
+
+![CloudWatch](screenshots/cloudwatch-logs.png)
+
+*Figure: CloudWatch logs showing Lambda processing payment webhook events.*
+
+### DynamoDB
+
+![DynamoDB](screenshots/dynamodb-events.png)
+
+*Figure: Fraud events persisted in DynamoDB for downstream analytics.*
+
+---
+
+## Kaggle Batch Import
+
+![Kaggle Import](screenshots/kaggle-import.png)
+
+*Figure: Historical PaySim dataset imported into the platform.*
+
+---
+
+## Fraud Analytics
+
+![ML](screenshots/ml-baseline.png)
+
+*Figure: Rule engine performance compared with the Random Forest baseline model.*
+
+---
+
+## Database Evidence
+
+### Fraud Alerts
+
+![Alerts](screenshots/postgres-fraud-alerts.png)
+
+### Fraud Cases
+
+![Cases](screenshots/postgres-fraud-cases.png)
+
+### Payment Events
+
+![Payments](screenshots/postgres-payment-events.png)
 
 ---
 
@@ -564,6 +663,20 @@ This project can be discussed from multiple perspectives during technical interv
 | v1.1    | Docker Deployment, Utility Scripts, DevOps Improvements                                          |
 | v1.2    | AWS Integration, Selenium Automation, Dashboard Enhancements                                     |
 | v1.3    | Kaggle Batch Import, Risk Analysis Framework, Machine Learning Baseline, Interview Demo Launcher |
+
+---
+
+## Project Statistics
+
+- 9 REST API modules
+- 20+ API endpoints
+- 7 automated test suites
+- Docker deployment
+- AWS cloud integration
+- Kaggle PaySim dataset support
+- PostgreSQL relational database
+- Streamlit analytics dashboard
+- Rule engine + ML baseline
 
 ---
 
