@@ -1,5 +1,8 @@
 from datetime import timedelta
+
 from app.database.models import Transaction
+from app.risk.risk_analysis_manager import RiskAnalysisManager
+
 
 HIGH_RISK_MERCHANT_CATEGORIES = ["CRYPTO", "GAMBLING", "MONEY_TRANSFER"]
 
@@ -60,5 +63,14 @@ def evaluate_transaction(transaction, account=None, customer=None, db=None):
                 "rule_name": "HIGH_TRANSACTION_VELOCITY",
                 "severity": "HIGH"
             })
+
+    risk_manager = RiskAnalysisManager()
+    risk_result = risk_manager.analyze(transaction)
+
+    if risk_result.risk_level in ["HIGH", "CRITICAL"]:
+        alerts.append({
+            "rule_name": f"RISK_SCORE_{risk_result.risk_level}",
+            "severity": "HIGH" if risk_result.risk_level == "HIGH" else "CRITICAL"
+        })
 
     return alerts

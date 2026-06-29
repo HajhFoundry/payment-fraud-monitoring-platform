@@ -4,6 +4,20 @@ import plotly.express as px
 from sqlalchemy import create_engine
 import boto3
 
+import requests
+
+API_BASE_URL = "http://127.0.0.1:8000"
+
+def fetch_import_jobs():
+    try:
+        response = requests.get(f"{API_BASE_URL}/import-jobs/")
+        if response.status_code == 200:
+            return response.json()
+        return []
+    except Exception:
+        return []
+
+
 DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/payment_fraud_db"
 
 engine = create_engine(DATABASE_URL)
@@ -249,6 +263,20 @@ if not payment_events_df.empty:
 else:
     st.info("No payment events found.")
 
+st.header("Batch Import Jobs")
+
+import_jobs = fetch_import_jobs()
+
+if import_jobs:
+    st.metric("Total Import Jobs", len(import_jobs))
+    st.metric("Rows Imported", sum(job["imported_rows"] for job in import_jobs))
+    st.metric("Fraud Rows", sum(job["fraud_rows"] for job in import_jobs))
+    st.metric("Rejected Rows", sum(job["rejected_rows"] for job in import_jobs))
+
+    st.dataframe(import_jobs)
+else:
+    st.info("No import jobs found.")
+
 st.subheader("Cloud Fraud Events from DynamoDB")
 
 try:
@@ -327,5 +355,7 @@ fig_cloud_provider = px.bar(
     y="count",
     title="Cloud Fraud Events by Provider"
 )
+
+
 
 st.plotly_chart(fig_cloud_provider, use_container_width=True)

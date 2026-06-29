@@ -8,6 +8,7 @@ from app.api import login_events
 from app.api import payments
 from app.database.models import Base
 from app.database.connection import engine
+from app.api import import_jobs
 
 app = FastAPI(
     title="Payment Fraud Detection Platform",
@@ -21,6 +22,7 @@ app.include_router(fraud_alerts.router)
 app.include_router(fraud_cases.router)
 app.include_router(login_events.router)
 app.include_router(payments.router)
+app.include_router(import_jobs.router)
 
 @app.on_event("startup")
 def startup_event():
